@@ -1,0 +1,110 @@
+import { CardData, CardTheme } from '../types';
+
+export const defaultCardData: CardData = {
+  name: 'GEAN MARCELL',
+  title: 'MOTORISTA PARTICULAR',
+  tagline: 'Segurança, Conforto e Pontualidade para suas viagens',
+  subtitle: 'Seu trajeto com total conforto e tranquilidade',
+  vehicle: 'Fiat Argo 2026 (Novo e Confortável)',
+  coverage: 'Sorocaba e Região',
+  services: [
+    'Corridas particulares',
+    'Compromissos corporativos',
+    'Translado de Aeroportos (GRU / VCP / CGH)',
+    'Viagens intermunicipais e estaduais'
+  ],
+  phone: '(15) 98149-5869',
+  whatsappMessage: 'Olá Gean! Peguei seu contato no cartão de visita e gostaria de orçar uma corrida particular.',
+  paymentMethods: ['PIX', 'Dinheiro', 'Cartão (Débito/Crédito)'],
+  pixKey: '15981495869',
+  pixKeyType: 'phone',
+  customNote: 'Atendimento com horário agendado ou sob consulta rápida.'
+};
+
+export const themes: Record<string, CardTheme> = {
+  sophisticated: {
+    id: 'sophisticated',
+    name: 'Sophisticated Dark (Elegante & Minimalista)',
+    bgGradient: 'from-[#050505] via-[#0a0a0a] to-[#050505]',
+    cardBg: 'bg-[#111111]',
+    accent: '#ffffff',
+    accentText: 'text-white',
+    textPrimary: 'text-white',
+    textSecondary: 'text-white/60',
+    border: 'border-white/10',
+    badgeBg: 'bg-white/5 border border-white/10 text-white/80',
+    qrFgColor: '#000000',
+    qrBgColor: '#FFFFFF',
+    fontStyle: 'serif',
+  },
+  carbon: {
+    id: 'carbon',
+    name: 'Executive Carbon (Preto & Ouro)',
+    bgGradient: 'from-zinc-950 via-zinc-900 to-black',
+    cardBg: 'bg-gradient-to-br from-zinc-900 via-zinc-950 to-black',
+    accent: '#eab308', // gold-500
+    accentText: 'text-amber-400',
+    textPrimary: 'text-zinc-50',
+    textSecondary: 'text-zinc-300',
+    border: 'border-amber-500/30',
+    badgeBg: 'bg-amber-500/10 border border-amber-500/30 text-amber-300',
+    qrFgColor: '#000000',
+    qrBgColor: '#FFFFFF',
+  },
+  navy: {
+    id: 'navy',
+    name: 'Modern Navy (Azul Escuro & Prata)',
+    bgGradient: 'from-slate-950 via-slate-900 to-slate-950',
+    cardBg: 'bg-gradient-to-br from-slate-900 via-slate-950 to-blue-950',
+    accent: '#38bdf8', // sky-400
+    accentText: 'text-sky-400',
+    textPrimary: 'text-slate-50',
+    textSecondary: 'text-slate-300',
+    border: 'border-sky-500/30',
+    badgeBg: 'bg-sky-500/10 border border-sky-500/30 text-sky-300',
+    qrFgColor: '#0f172a',
+    qrBgColor: '#FFFFFF',
+  },
+  emerald: {
+    id: 'emerald',
+    name: 'Prêmio Emerald (Verde Esmeralda)',
+    bgGradient: 'from-emerald-950 via-zinc-900 to-zinc-950',
+    cardBg: 'bg-gradient-to-br from-emerald-950 via-zinc-950 to-emerald-900',
+    accent: '#34d399', // emerald-400
+    accentText: 'text-emerald-400',
+    textPrimary: 'text-zinc-50',
+    textSecondary: 'text-zinc-300',
+    border: 'border-emerald-500/30',
+    badgeBg: 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-300',
+    qrFgColor: '#064e3b',
+    qrBgColor: '#FFFFFF',
+  },
+  obsidian: {
+    id: 'obsidian',
+    name: 'Uber Black Style (Preto Fosco & Branco)',
+    bgGradient: 'from-neutral-950 via-black to-neutral-900',
+    cardBg: 'bg-gradient-to-br from-neutral-900 via-black to-neutral-950',
+    accent: '#ffffff',
+    accentText: 'text-white',
+    textPrimary: 'text-neutral-100',
+    textSecondary: 'text-neutral-400',
+    border: 'border-neutral-700',
+    badgeBg: 'bg-neutral-800 border border-neutral-700 text-neutral-200',
+    qrFgColor: '#000000',
+    qrBgColor: '#FFFFFF',
+  },
+  minimal: {
+    id: 'minimal',
+    name: 'Clean Platinum (Claro & Elegante)',
+    bgGradient: 'from-slate-100 via-white to-slate-100',
+    cardBg: 'bg-gradient-to-br from-white via-slate-50 to-slate-100',
+    accent: '#2563eb', // blue-600
+    accentText: 'text-blue-600',
+    textPrimary: 'text-slate-900',
+    textSecondary: 'text-slate-600',
+    border: 'border-slate-300',
+    badgeBg: 'bg-blue-50 border border-blue-200 text-blue-700',
+    qrFgColor: '#0f172a',
+    qrBgColor: '#FFFFFF',
+  }
+};

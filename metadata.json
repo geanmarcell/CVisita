@@ -1,0 +1,6 @@
+{
+  "name": "Cartão de Visita - Gean Marcell Driver",
+  "description": "Cartão de visita digital e impresso para motorista particular com QR Code, WhatsApp, VCard e Chave PIX.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
