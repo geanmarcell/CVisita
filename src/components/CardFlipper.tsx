@@ -40,7 +40,7 @@ export const CardFlipper: React.FC<CardFlipperProps> = ({
   };
 
   return (
-    <div className="flex flex-col items-center w-full max-w-3xl mx-auto space-y-4 sm:space-y-6 px-1 sm:px-0">
+    <div className="flex flex-col items-center w-full max-w-3xl md:max-w-4xl lg:max-w-5xl xl:max-w-6xl mx-auto space-y-4 sm:space-y-6 px-1 sm:px-0">
       {/* Top Controls Bar */}
       <div className="flex flex-wrap items-center justify-between w-full gap-2 px-1">
         <div className="flex items-center gap-2">
