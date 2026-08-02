@@ -24,15 +24,15 @@ export const PrintSheet: React.FC<PrintSheetProps> = ({
   return (
     <div className="w-full max-w-5xl mx-auto space-y-6">
       {/* Top Banner & Print Controls (Hidden during print) */}
-      <div className="no-print bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-xl space-y-4 text-left">
+      <div className="no-print bg-zinc-900 border border-zinc-800 rounded-2xl p-6 sm:p-8 shadow-xl space-y-5 text-left">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/30 text-xs font-bold uppercase tracking-wider mb-2">
-              <Printer className="w-3.5 h-3.5" />
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/30 text-xs sm:text-sm font-bold uppercase tracking-wider mb-2">
+              <Printer className="w-4 h-4" />
               Pronto para Gráfica ou Impressão Caseira
             </div>
-            <h2 className="text-2xl font-black text-white">Layout de Impressão (9x5 cm)</h2>
-            <p className="text-xs text-zinc-400 mt-1">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white">Layout de Impressão (9x5 cm)</h2>
+            <p className="text-xs sm:text-sm md:text-base text-zinc-300 mt-1">
               Proporção padrão gráfica (90mm x 50mm). Você pode imprimir 1 par para teste ou uma folha A4 completa.
             </p>
           </div>
@@ -40,41 +40,41 @@ export const PrintSheet: React.FC<PrintSheetProps> = ({
           <div className="flex items-center gap-3">
             <button
               onClick={onBackToPreview}
-              className="px-4 py-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-200 font-bold text-xs flex items-center gap-2 cursor-pointer"
+              className="px-4 py-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-200 font-extrabold text-xs sm:text-sm md:text-base flex items-center gap-2 cursor-pointer transition-all border border-zinc-700"
             >
-              <ArrowLeft className="w-4 h-4" />
+              <ArrowLeft className="w-4 h-4 md:w-5 md:h-5" />
               <span>Voltar</span>
             </button>
 
             <button
               onClick={handlePrint}
-              className="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-950 font-black text-xs sm:text-sm flex items-center gap-2 shadow-lg transition-all cursor-pointer"
+              className="px-6 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-950 font-black text-xs sm:text-sm md:text-base flex items-center gap-2.5 shadow-lg transition-all cursor-pointer"
             >
-              <Printer className="w-4 h-4" />
+              <Printer className="w-4 h-4 md:w-5 md:h-5" />
               <span>Imprimir Agora (Ctrl + P)</span>
             </button>
           </div>
         </div>
 
         {/* Quantity Toggle */}
-        <div className="flex items-center gap-3 pt-2 border-t border-zinc-800">
-          <span className="text-xs font-bold text-zinc-400">Quantidade por Folha:</span>
+        <div className="flex flex-wrap items-center gap-3 pt-3 border-t border-zinc-800">
+          <span className="text-xs sm:text-sm md:text-base font-bold text-zinc-300">Quantidade por Folha:</span>
           <button
             onClick={() => setGridCount(1)}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+            className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-extrabold transition-all cursor-pointer ${
               gridCount === 1
-                ? 'bg-amber-500 text-zinc-950'
-                : 'bg-zinc-800 text-zinc-400 hover:text-white'
+                ? 'bg-amber-500 text-zinc-950 shadow-md'
+                : 'bg-zinc-800 text-zinc-300 hover:text-white'
             }`}
           >
             1 Par (Frente + Verso)
           </button>
           <button
             onClick={() => setGridCount(5)}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+            className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-extrabold transition-all cursor-pointer ${
               gridCount === 5
-                ? 'bg-amber-500 text-zinc-950'
-                : 'bg-zinc-800 text-zinc-400 hover:text-white'
+                ? 'bg-amber-500 text-zinc-950 shadow-md'
+                : 'bg-zinc-800 text-zinc-300 hover:text-white'
             }`}
           >
             Folha A4 Completa (10 Cartões - 5 Frentes / 5 Versos)
