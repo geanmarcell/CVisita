@@ -32,4 +32,4 @@ export interface CardTheme {
   fontStyle?: 'serif' | 'sans';
 }
 
-export type ActiveTab = 'preview' | 'qrcodes' | 'ride' | 'print' | 'tips' | 'edit';
+export type ActiveTab = 'preview' | 'qrcodes' | 'ride' | 'print' | 'tips' | 'edit' | 'calc_admin';

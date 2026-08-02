@@ -7,6 +7,8 @@ import { RideCalculatorModal } from './components/RideCalculatorModal';
 import { PrintSheet } from './components/PrintSheet';
 import { TipsSection } from './components/TipsSection';
 import { CardEditor } from './components/CardEditor';
+import { AdminLoginModal } from './components/AdminLoginModal';
+import { AdminDriverCalculator } from './components/AdminDriverCalculator';
 import {
   Car,
   QrCode,
@@ -21,7 +23,12 @@ import {
   Sparkles,
   MapPin,
   ExternalLink,
-  Check
+  Check,
+  Lock,
+  Unlock,
+  LogOut,
+  Calculator,
+  UserCheck
 } from 'lucide-react';
 import { downloadVCard, getWhatsAppUrl, copyToClipboard } from './utils/cardUtils';
 
@@ -40,6 +47,12 @@ export default function App() {
   const [isCalculatorOpen, setIsCalculatorOpen] = useState(false);
   const [copiedShare, setCopiedShare] = useState(false);
 
+  // Admin Auth State
+  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState<boolean>(() => {
+    return localStorage.getItem('gean_driver_is_admin') === 'true';
+  });
+  const [isAdminLoginOpen, setIsAdminLoginOpen] = useState(false);
+
   // Save to localStorage on change
   useEffect(() => {
     localStorage.setItem('gean_driver_card_data', JSON.stringify(cardData));
@@ -56,6 +69,20 @@ export default function App() {
     setThemeId('sophisticated');
     localStorage.removeItem('gean_driver_card_data');
     localStorage.removeItem('gean_driver_theme_id');
+  };
+
+  const handleAdminLogout = () => {
+    setIsAdminLoggedIn(false);
+    localStorage.removeItem('gean_driver_is_admin');
+    if (['tips', 'edit', 'calc_admin'].includes(activeTab)) {
+      setActiveTab('preview');
+    }
+  };
+
+  const handleAdminLoginSuccess = () => {
+    setIsAdminLoggedIn(true);
+    localStorage.setItem('gean_driver_is_admin', 'true');
+    setActiveTab('calc_admin');
   };
 
   const handleShareApp = async () => {
@@ -87,6 +114,7 @@ export default function App() {
       {/* Visual Ambient Glow Accents */}
       <div className="absolute top-0 right-0 w-80 h-80 bg-white/5 rounded-full blur-[120px] pointer-events-none -mr-40 -mt-40" />
       <div className="absolute bottom-0 left-0 w-80 h-80 bg-white/5 rounded-full blur-[120px] pointer-events-none -ml-40 -mb-40" />
+      
       {/* Top Navbar */}
       <header className="no-print sticky top-0 z-40 bg-zinc-950/90 backdrop-blur-md border-b border-zinc-800/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
@@ -113,7 +141,7 @@ export default function App() {
             </div>
           </div>
 
-          {/* Quick Header Actions */}
+          {/* Quick Header Actions & Admin Status */}
           <div className="flex items-center gap-3">
             <a
               href={getWhatsAppUrl(cardData.phone, cardData.whatsappMessage)}
@@ -132,12 +160,39 @@ export default function App() {
               {copiedShare ? <Check className="w-4 h-4 text-emerald-400" /> : <Share2 className="w-4 h-4 text-amber-400" />}
               <span className="hidden sm:inline">{copiedShare ? 'Copiado!' : 'Compartilhar'}</span>
             </button>
+
+            {/* Admin Login / Logout Badge */}
+            {isAdminLoggedIn ? (
+              <div className="flex items-center gap-2 bg-amber-500/10 border border-amber-500/30 rounded-xl px-3 py-1.5">
+                <span className="hidden lg:inline-flex items-center gap-1.5 text-xs font-extrabold text-amber-400">
+                  <UserCheck className="w-4 h-4" /> Admin: Gean
+                </span>
+                <button
+                  onClick={handleAdminLogout}
+                  title="Sair do Modo Admin"
+                  className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-red-500/20 hover:bg-red-500/30 text-red-300 border border-red-500/30 text-xs font-bold transition-all cursor-pointer"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                  <span>Sair</span>
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => setIsAdminLoginOpen(true)}
+                className="flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 font-extrabold text-xs sm:text-sm border border-amber-500/30 transition-all cursor-pointer"
+              >
+                <Lock className="w-4 h-4" />
+                <span className="hidden sm:inline">Área do Motorista</span>
+                <span className="sm:hidden">Admin</span>
+              </button>
+            )}
           </div>
         </div>
 
         {/* Tab Navigation Menu */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 overflow-x-auto no-scrollbar scroll-smooth border-t border-zinc-800/60">
           <nav className="flex items-center gap-1.5 py-2.5 min-w-max">
+            {/* PUBLIC TABS */}
             <button
               onClick={() => setActiveTab('preview')}
               className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm md:text-base font-extrabold transition-all cursor-pointer ${
@@ -182,29 +237,49 @@ export default function App() {
               <span>Modo Impressão (9x5 cm)</span>
             </button>
 
-            <button
-              onClick={() => setActiveTab('tips')}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm md:text-base font-extrabold transition-all cursor-pointer ${
-                activeTab === 'tips'
-                  ? 'bg-amber-500 text-zinc-950 shadow-md shadow-amber-500/20'
-                  : 'text-zinc-300 hover:text-white hover:bg-zinc-900'
-              }`}
-            >
-              <Lightbulb className="w-4 h-4 md:w-5 md:h-5" />
-              <span>Dicas para Motoristas</span>
-            </button>
+            {/* ADMIN ONLY TABS (Visible strictly when logged in) */}
+            {isAdminLoggedIn && (
+              <>
+                <div className="h-6 w-px bg-zinc-800 my-auto mx-1" />
 
-            <button
-              onClick={() => setActiveTab('edit')}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm md:text-base font-extrabold transition-all cursor-pointer ${
-                activeTab === 'edit'
-                  ? 'bg-amber-500 text-zinc-950 shadow-md shadow-amber-500/20'
-                  : 'text-zinc-300 hover:text-white hover:bg-zinc-900'
-              }`}
-            >
-              <Sliders className="w-4 h-4 md:w-5 md:h-5" />
-              <span>Personalizar Dados</span>
-            </button>
+                {/* Driver Internal Cost Calculator Button */}
+                <button
+                  onClick={() => setActiveTab('calc_admin')}
+                  className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm md:text-base font-extrabold transition-all cursor-pointer ${
+                    activeTab === 'calc_admin'
+                      ? 'bg-amber-500 text-zinc-950 shadow-md shadow-amber-500/20'
+                      : 'text-amber-400 hover:bg-amber-500/10 border border-amber-500/30'
+                  }`}
+                >
+                  <Calculator className="w-4 h-4 md:w-5 md:h-5" />
+                  <span>Cálculo de Corrida (Admin)</span>
+                </button>
+
+                <button
+                  onClick={() => setActiveTab('tips')}
+                  className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm md:text-base font-extrabold transition-all cursor-pointer ${
+                    activeTab === 'tips'
+                      ? 'bg-amber-500 text-zinc-950 shadow-md shadow-amber-500/20'
+                      : 'text-zinc-300 hover:text-white hover:bg-zinc-900'
+                  }`}
+                >
+                  <Lightbulb className="w-4 h-4 md:w-5 md:h-5" />
+                  <span>Dicas para Motoristas</span>
+                </button>
+
+                <button
+                  onClick={() => setActiveTab('edit')}
+                  className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm md:text-base font-extrabold transition-all cursor-pointer ${
+                    activeTab === 'edit'
+                      ? 'bg-amber-500 text-zinc-950 shadow-md shadow-amber-500/20'
+                      : 'text-zinc-300 hover:text-white hover:bg-zinc-900'
+                  }`}
+                >
+                  <Sliders className="w-4 h-4 md:w-5 md:h-5" />
+                  <span>Personalizar Dados</span>
+                </button>
+              </>
+            )}
           </nav>
         </div>
       </header>
@@ -285,30 +360,86 @@ export default function App() {
           </div>
         )}
 
+        {/* ADMIN RESTRICTED VIEWS */}
+        {activeTab === 'calc_admin' && (
+          <div className="animate-fade-in">
+            {isAdminLoggedIn ? (
+              <AdminDriverCalculator data={cardData} />
+            ) : (
+              <div className="p-8 max-w-md mx-auto text-center space-y-4 bg-zinc-900 rounded-2xl border border-zinc-800">
+                <Lock className="w-12 h-12 text-amber-400 mx-auto" />
+                <h3 className="text-xl font-bold text-white">Acesso Restrito ao Motorista</h3>
+                <p className="text-sm text-zinc-400">Faça login com sua senha de administrador para acessar a calculadora interna.</p>
+                <button
+                  onClick={() => setIsAdminLoginOpen(true)}
+                  className="px-6 py-3 rounded-xl bg-amber-500 text-zinc-950 font-black text-sm"
+                >
+                  Fazer Login Admin
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
         {activeTab === 'tips' && (
           <div className="animate-fade-in">
-            <TipsSection data={cardData} />
+            {isAdminLoggedIn ? (
+              <TipsSection data={cardData} />
+            ) : (
+              <div className="p-8 max-w-md mx-auto text-center space-y-4 bg-zinc-900 rounded-2xl border border-zinc-800">
+                <Lock className="w-12 h-12 text-amber-400 mx-auto" />
+                <h3 className="text-xl font-bold text-white">Acesso Restrito ao Motorista</h3>
+                <p className="text-sm text-zinc-400">Faça login para visualizar as dicas para motoristas.</p>
+                <button
+                  onClick={() => setIsAdminLoginOpen(true)}
+                  className="px-6 py-3 rounded-xl bg-amber-500 text-zinc-950 font-black text-sm"
+                >
+                  Fazer Login Admin
+                </button>
+              </div>
+            )}
           </div>
         )}
 
         {activeTab === 'edit' && (
           <div className="animate-fade-in">
-            <CardEditor
-              data={cardData}
-              onChange={setCardData}
-              activeThemeId={themeId}
-              onThemeChange={setThemeId}
-              onReset={handleResetDefaults}
-            />
+            {isAdminLoggedIn ? (
+              <CardEditor
+                data={cardData}
+                onChange={setCardData}
+                activeThemeId={themeId}
+                onThemeChange={setThemeId}
+                onReset={handleResetDefaults}
+              />
+            ) : (
+              <div className="p-8 max-w-md mx-auto text-center space-y-4 bg-zinc-900 rounded-2xl border border-zinc-800">
+                <Lock className="w-12 h-12 text-amber-400 mx-auto" />
+                <h3 className="text-xl font-bold text-white">Acesso Restrito ao Motorista</h3>
+                <p className="text-sm text-zinc-400">Faça login para personalizar os dados do cartão.</p>
+                <button
+                  onClick={() => setIsAdminLoginOpen(true)}
+                  className="px-6 py-3 rounded-xl bg-amber-500 text-zinc-950 font-black text-sm"
+                >
+                  Fazer Login Admin
+                </button>
+              </div>
+            )}
           </div>
         )}
       </main>
 
-      {/* Ride Quote Modal */}
+      {/* Ride Quote Modal (For Passengers) */}
       <RideCalculatorModal
         data={cardData}
         isOpen={isCalculatorOpen}
         onClose={() => setIsCalculatorOpen(false)}
+      />
+
+      {/* Admin Login Modal */}
+      <AdminLoginModal
+        isOpen={isAdminLoginOpen}
+        onClose={() => setIsAdminLoginOpen(false)}
+        onSuccess={handleAdminLoginSuccess}
       />
 
       {/* Bottom Sticky Action Bar on Mobile */}
