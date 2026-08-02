@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { CardData, CardTheme } from '../types';
 import { BusinessCardFront } from './BusinessCardFront';
 import { BusinessCardBack } from './BusinessCardBack';
-import { RotateCw, Sparkles, Smartphone, Download, Share2, Copy, Check } from 'lucide-react';
+import { RotateCw, Sparkles, Smartphone, Download, Copy, Check, ZoomIn, ZoomOut, Maximize2 } from 'lucide-react';
 import { downloadVCard, copyToClipboard, getWhatsAppUrl } from '../utils/cardUtils';
 
 interface CardFlipperProps {
@@ -20,6 +20,7 @@ export const CardFlipper: React.FC<CardFlipperProps> = ({
 }) => {
   const [isFlipped, setIsFlipped] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [zoomLevel, setZoomLevel] = useState<'normal' | 'large' | 'full'>('normal');
 
   const handleCopyLink = async () => {
     const waUrl = getWhatsAppUrl(data.phone, data.whatsappMessage);
@@ -32,61 +33,102 @@ export const CardFlipper: React.FC<CardFlipperProps> = ({
     }
   };
 
+  const getContainerScaleClass = () => {
+    if (zoomLevel === 'large') return 'scale-105 sm:scale-110 my-4 sm:my-6 transition-all duration-300';
+    if (zoomLevel === 'full') return 'scale-110 sm:scale-125 my-6 sm:my-10 transition-all duration-300';
+    return 'scale-100 transition-all duration-300';
+  };
+
   return (
-    <div className="flex flex-col items-center w-full max-w-3xl mx-auto space-y-6">
+    <div className="flex flex-col items-center w-full max-w-3xl mx-auto space-y-4 sm:space-y-6 px-1 sm:px-0">
       {/* Top Controls Bar */}
-      <div className="flex items-center justify-between w-full px-2">
+      <div className="flex flex-wrap items-center justify-between w-full gap-2 px-1">
         <div className="flex items-center gap-2">
-          <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">
+          <span className="text-[10px] sm:text-xs font-semibold text-zinc-400 uppercase tracking-wider hidden sm:inline">
             Lado Atual:
           </span>
-          <span className="px-3 py-1 text-xs font-bold rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/30">
-            {isFlipped ? 'Verso (Informações & Contatos)' : 'Frente (Destaque Principal)'}
+          <span className="px-2.5 py-1 text-[11px] sm:text-xs font-bold rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/30">
+            {isFlipped ? 'Verso (Contatos)' : 'Frente (Destaque)'}
           </span>
         </div>
 
-        <button
-          onClick={() => setIsFlipped(!isFlipped)}
-          className="flex items-center gap-2 px-4 py-2 text-xs font-bold rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-100 border border-zinc-700 transition-all shadow-md active:scale-95 cursor-pointer"
-        >
-          <RotateCw className={`w-4 h-4 text-amber-400 transition-transform duration-500 ${isFlipped ? 'rotate-180' : ''}`} />
-          <span>Virar Cartão</span>
-        </button>
-      </div>
-
-      {/* 3D Flip Card Container */}
-      <div
-        className="w-full perspective-1000 cursor-pointer group"
-        onClick={() => setIsFlipped(!isFlipped)}
-      >
-        <div
-          className={`relative w-full transition-transform duration-700 transform-style-3d ${
-            isFlipped ? 'rotate-y-180' : ''
-          }`}
-        >
-          {/* Front Face */}
-          <div className="w-full backface-hidden">
-            <BusinessCardFront data={data} theme={theme} />
+        <div className="flex items-center gap-1.5 ml-auto sm:ml-0">
+          {/* Zoom controls for mobile readability */}
+          <div className="flex items-center bg-zinc-900 border border-zinc-800 rounded-xl p-0.5">
+            <button
+              onClick={() => setZoomLevel('normal')}
+              title="Tamanho Normal"
+              className={`px-2 py-1 text-[10px] sm:text-xs font-bold rounded-lg transition-all ${
+                zoomLevel === 'normal' ? 'bg-zinc-800 text-white shadow' : 'text-zinc-400 hover:text-zinc-200'
+              }`}
+            >
+              100%
+            </button>
+            <button
+              onClick={() => setZoomLevel('large')}
+              title="Aumentar para Leitura em Celular"
+              className={`px-2 py-1 text-[10px] sm:text-xs font-bold rounded-lg transition-all ${
+                zoomLevel === 'large' ? 'bg-amber-500/20 text-amber-300' : 'text-zinc-400 hover:text-zinc-200'
+              }`}
+            >
+              115%
+            </button>
+            <button
+              onClick={() => setZoomLevel('full')}
+              title="Modo Tela Cheia Ampliado"
+              className={`px-2 py-1 text-[10px] sm:text-xs font-bold rounded-lg transition-all ${
+                zoomLevel === 'full' ? 'bg-amber-500/30 text-amber-200' : 'text-zinc-400 hover:text-zinc-200'
+              }`}
+            >
+              130%
+            </button>
           </div>
 
-          {/* Back Face */}
-          <div className="absolute inset-0 w-full h-full backface-hidden rotate-y-180">
-            <BusinessCardBack data={data} theme={theme} />
+          <button
+            onClick={() => setIsFlipped(!isFlipped)}
+            className="flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 text-xs font-bold rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-100 border border-zinc-700 transition-all shadow-md active:scale-95 cursor-pointer"
+          >
+            <RotateCw className={`w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-400 transition-transform duration-500 ${isFlipped ? 'rotate-180' : ''}`} />
+            <span>Virar</span>
+          </button>
+        </div>
+      </div>
+
+      {/* 3D Flip Card Container with Zoom Scaling */}
+      <div className={`w-full ${getContainerScaleClass()}`}>
+        <div
+          className="w-full perspective-1000 cursor-pointer group"
+          onClick={() => setIsFlipped(!isFlipped)}
+        >
+          <div
+            className={`relative w-full transition-transform duration-700 transform-style-3d ${
+              isFlipped ? 'rotate-y-180' : ''
+            }`}
+          >
+            {/* Front Face */}
+            <div className="w-full backface-hidden">
+              <BusinessCardFront data={data} theme={theme} />
+            </div>
+
+            {/* Back Face */}
+            <div className="absolute inset-0 w-full h-full backface-hidden rotate-y-180">
+              <BusinessCardBack data={data} theme={theme} />
+            </div>
           </div>
         </div>
       </div>
 
       {/* Instructions Prompt */}
-      <p className="text-xs text-zinc-400 flex items-center gap-1.5 animate-pulse">
+      <p className="text-xs text-zinc-400 flex items-center justify-center gap-1.5 animate-pulse pt-1">
         <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-        Clique no cartão para girar e ver o verso.
+        Toque no cartão para girar.
       </p>
 
       {/* Quick Action Bar for Gean & Passengers */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 w-full pt-2">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3 w-full pt-2">
         <button
           onClick={() => downloadVCard(data)}
-          className="flex items-center justify-center gap-2 p-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-xs sm:text-sm shadow-lg shadow-blue-900/20 transition-all active:scale-95 cursor-pointer"
+          className="flex items-center justify-center gap-2 py-3 px-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-xs sm:text-sm shadow-lg shadow-blue-900/20 transition-all active:scale-95 cursor-pointer"
         >
           <Download className="w-4 h-4" />
           <span>Baixar VCard</span>
@@ -94,15 +136,15 @@ export const CardFlipper: React.FC<CardFlipperProps> = ({
 
         <button
           onClick={onOpenQRCodes}
-          className="flex items-center justify-center gap-2 p-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-amber-300 font-bold text-xs sm:text-sm border border-amber-500/30 shadow-lg transition-all active:scale-95 cursor-pointer"
+          className="flex items-center justify-center gap-2 py-3 px-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-amber-300 font-bold text-xs sm:text-sm border border-amber-500/30 shadow-lg transition-all active:scale-95 cursor-pointer"
         >
           <Smartphone className="w-4 h-4" />
-          <span>Ver QR Codes</span>
+          <span>QR Codes</span>
         </button>
 
         <button
           onClick={onOpenRideCalculator}
-          className="flex items-center justify-center gap-2 p-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm shadow-lg shadow-emerald-900/20 transition-all active:scale-95 cursor-pointer"
+          className="flex items-center justify-center gap-2 py-3 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm shadow-lg shadow-emerald-900/20 transition-all active:scale-95 cursor-pointer"
         >
           <Sparkles className="w-4 h-4" />
           <span>Orçar Corrida</span>
@@ -110,7 +152,7 @@ export const CardFlipper: React.FC<CardFlipperProps> = ({
 
         <button
           onClick={handleCopyLink}
-          className="flex items-center justify-center gap-2 p-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-200 font-bold text-xs sm:text-sm border border-zinc-700 shadow-lg transition-all active:scale-95 cursor-pointer"
+          className="flex items-center justify-center gap-2 py-3 px-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-200 font-bold text-xs sm:text-sm border border-zinc-700 shadow-lg transition-all active:scale-95 cursor-pointer"
         >
           {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
           <span>{copied ? 'Copiado!' : 'Copiar Dados'}</span>
